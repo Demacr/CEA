@@ -1,1 +1,4 @@
 *.sqlite3
+configs/
+.idea/
+__pycache__/
