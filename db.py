@@ -1,5 +1,9 @@
 import sqlite3
 
+
+from napalm_ios import IOSDriver
+
+
 DBVERSION = 1
 
 class Database():
@@ -100,3 +104,35 @@ class Database():
             ''', (device_type, hostname, ip_address, port, profile, device_type, hostname, ip_address, port, profile))
         conn.commit()
         conn.close()
+
+
+    def get_device_driver(self, hostname = None, ip_address = None, device_type = None, filter_type = 'exact'):
+        first_percent = ''
+        second_percent = ''
+        if filter_type not in ['exact', 'in', 'begin_with', 'end_with']:
+            filter_type = 'exact'
+        else:
+            if filter_type in ['in', 'begin_with']:
+                first_percent = '%'
+            if filter_type in ['in', 'end_with']:
+                second_percent = '%'
+        if hostname is None and ip_address is None and device_type is None:
+            return []
+        filters = dict((k,v) for k,v in {'hostname': hostname, 'ipaddr': ip_address, 'device_type': device_type}.items()
+                       if v is not None)
+        conn = sqlite3.connect(self.db)
+        curs = conn.cursor()
+        curs.execute('''
+            SELECT device_type, hostname, ipaddr, port, username, password, secret 
+            FROM devices INNER JOIN profiles ON devices.id_profile = profiles.id 
+            WHERE ''' + ' AND '.
+                     join(["{} LIKE '{}{}{}'".format(k, first_percent, v, second_percent) for k,v in filters.items()]))
+        sql_result = curs.fetchall()
+        if sql_result is None:
+            return []
+        result = []
+        for row in sql_result:
+            if row[0] == 'cisco_ios':
+                result.append(IOSDriver(row[2], row[4], row[5], optional_args={'secret': row[6]}))
+        conn.close()
+        return result
