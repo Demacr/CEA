@@ -109,6 +109,7 @@ class Database():
     def get_device_driver(self, hostname = None, ip_address = None, device_type = None, filter_type = 'exact'):
         first_percent = ''
         second_percent = ''
+        result = []
         if filter_type not in ['exact', 'in', 'begin_with', 'end_with']:
             filter_type = 'exact'
         else:
@@ -117,7 +118,7 @@ class Database():
             if filter_type in ['in', 'end_with']:
                 second_percent = '%'
         if hostname is None and ip_address is None and device_type is None:
-            return []
+            return result
         filters = dict((k,v) for k,v in {'hostname': hostname, 'ipaddr': ip_address, 'device_type': device_type}.items()
                        if v is not None)
         conn = sqlite3.connect(self.db)
@@ -129,8 +130,7 @@ class Database():
                      join(["{} LIKE '{}{}{}'".format(k, first_percent, v, second_percent) for k,v in filters.items()]))
         sql_result = curs.fetchall()
         if sql_result is None:
-            return []
-        result = []
+            return result
         for row in sql_result:
             if row[0] == 'cisco_ios':
                 result.append(IOSDriver(row[2], row[4], row[5], optional_args={'secret': row[6]}))
