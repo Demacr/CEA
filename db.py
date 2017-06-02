@@ -6,11 +6,11 @@ from napalm_ios import IOSDriver
 
 DBVERSION = 1
 
+
 class Database():
     def __init__(self, db):
         self.db = db
         self.__check_database()
-
 
     def __check_database(self):
         conn = sqlite3.connect(self.db)
@@ -32,7 +32,6 @@ class Database():
                 pass
         conn.commit()
         conn.close()
-
 
     def __create_tables(self):
         conn = sqlite3.connect(self.db)
@@ -73,7 +72,6 @@ class Database():
         conn.commit()
         conn.close()
 
-
     def add_profile(self, profile_name, username, password = None, secret = None):
         conn = sqlite3.connect(self.db)
         curs = conn.cursor()
@@ -84,7 +82,6 @@ class Database():
         ''', (profile_name, username, password, secret, profile_name, username, password, secret))
         conn.commit()
         conn.close()
-
 
     def add_device(self, device_type, hostname, ip_address, port, profile):
         conn = sqlite3.connect(self.db)
@@ -104,7 +101,6 @@ class Database():
             ''', (device_type, hostname, ip_address, port, profile, device_type, hostname, ip_address, port, profile))
         conn.commit()
         conn.close()
-
 
     def get_device_driver(self, hostname = None, ip_address = None, device_type = None, filter_type = 'exact'):
         first_percent = ''
