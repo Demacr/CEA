@@ -6,7 +6,8 @@ from napalm_s300 import S300Driver
 
 
 DBVERSION = 1
-
+DRIVERS = {'cisco_ios': IOSDriver,
+           'cisco_s300': S300Driver}
 
 class Database():
     def __init__(self, db):
@@ -129,9 +130,6 @@ class Database():
         if sql_result is None:
             return result
         for row in sql_result:
-            if row[0] == 'cisco_ios':
-                result.append(IOSDriver(row[2], row[4], row[5], optional_args={'secret': row[6]}))
-            elif row[0] == 'cisco_s300':
-                result.append(S300Driver(row[2], row[4], row[5], optional_args={'secret': row[6]}))
+            result.append(DRIVERS[row[0]](row[2], row[4], row[5], optional_args={'secret': row[6]}))
         conn.close()
         return result
