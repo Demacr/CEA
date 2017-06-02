@@ -2,6 +2,7 @@ import sqlite3
 
 
 from napalm_ios import IOSDriver
+from napalm_s300 import S300Driver
 
 
 DBVERSION = 1
@@ -130,5 +131,7 @@ class Database():
         for row in sql_result:
             if row[0] == 'cisco_ios':
                 result.append(IOSDriver(row[2], row[4], row[5], optional_args={'secret': row[6]}))
+            elif row[0] == 'cisco_s300':
+                result.append(S300Driver(row[2], row[4], row[5], optional_args={'secret': row[6]}))
         conn.close()
         return result
