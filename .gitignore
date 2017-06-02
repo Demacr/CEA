@@ -1,4 +1,5 @@
 *.sqlite3
 configs/
 .idea/
+napalm_s300/
 __pycache__/
