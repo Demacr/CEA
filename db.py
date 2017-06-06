@@ -9,7 +9,8 @@ DBVERSION = 1
 DRIVERS = {'cisco_ios': IOSDriver,
            'cisco_s300': S300Driver}
 
-class Database():
+
+class Database:
     def __init__(self, db):
         self.db = db
         self.__check_database()

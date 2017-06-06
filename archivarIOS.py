@@ -2,15 +2,14 @@ from os.path    import exists
 from os         import makedirs
 
 
-class archivarIOS():
-    def __init__(self, directory_path = './configs'):
+class ArchivarIOS:
+    def __init__(self, directory_path='./configs'):
         if isinstance(directory_path, str):
             self.dirpath = directory_path
         else:
             self.dirpath = './configs'
         if self.dirpath[-1] != '/':
             self.dirpath += '/'
-
 
     def save_config(self, configs):
         if not isinstance(configs, dict):
